@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxary car</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 25px 50px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background: rgba(0, 0, 0, 0);
+        }
+
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 50px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 200;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 50px;
+        }
+
+        .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            opacity: 1;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -5px;
+            left: 0;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* Section Navigation Indicator */
+        .section-nav {
+            position: fixed;
+            left: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .section-nav.visible {
+            opacity: 1;
+        }
+
+        .nav-dots {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .nav-dot {
+            width: 3px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .nav-dot.active {
+            background: #fff;
+            width: 4px;
+            height: 40px;
+        }
+
+        .nav-dot:hover {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-label {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        .nav-dot:hover .nav-label,
+        .nav-dot.active .nav-label {
+            opacity: 1;
+            left: 25px;
+        }
+
+        /* Dual Video Hero Section */
+        .hero-section {
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-video-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        /* tyr  */
+        .hero-video1 {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .hero-video1-container:hover .hero-video {
+            transform: scale(1.05);
+        }
+
+        /* try  end  */
+
+        .hero-video-container:hover .hero-video {
+            transform: scale(1.05);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .hero-video-container:hover .hero-overlay {
+            opacity: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            padding: 0 40px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 100;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .hero-cta {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 15px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-out 0.9s forwards;
+        }
+
+        .hero-cta:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Central Divider */
+        .hero-divider {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        /* Section Labels */
+        .section-label {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            z-index: 2;
+        }
+
+        /* Performance Stats Section */
+        .stats-section {
+            padding: 150px 50px;
+            background: linear-gradient(135deg, #000 0%, #111 100%);
+            position: relative;
+        }
+
+        .stats-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 80px;
+        }
+
+        .stat-item {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 40px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .stat-item:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-10px);
+        }
+
+        .stat-number {
+            font-size: 5rem;
+            font-weight: 100;
+            margin-bottom: 15px;
+            line-height: 1;
+            color: #fff;
+        }
+
+        .stat-unit {
+            font-size: 1.4rem;
+            font-weight: 300;
+            opacity: 0.6;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .stat-description {
+            font-size: 1rem;
+            font-weight: 300;
+            opacity: 0.8;
+            line-height: 1.6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Detailed Specs Grid */
+        .detailed-specs {
+            background: #0a0a0a;
+            padding: 150px 50px;
+        }
+
+        .specs-grid {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 60px;
+        }
+
+        .spec-category {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .spec-category.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .spec-category h3 {
+            font-size: 1.8rem;
+            font-weight: 200;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .spec-list {
+            list-style: none;
+        }
+
+        .spec-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+
+        .spec-list li:hover {
+            padding-left: 10px;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .spec-name {
+            opacity: 0.8;
+        }
+
+        .spec-value {
+            font-weight: 400;
+        }
+
+        /* Image Sections with Enhanced Parallax */
+        .image-section {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .image-section img {
+            width: 100%;
+            height: 110%;
+            object-fit: cover;
+            transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            filter: brightness(0.8);
+        }
+
+        .image-section:hover img {
+            transform: scale(1.1);
+            filter: brightness(1);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: all 0.6s ease;
+        }
+
+        .image-section:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .image-content {
+            text-align: center;
+            max-width: 700px;
+            padding: 0 50px;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .image-section:hover .image-content {
+            transform: translateY(0);
+        }
+
+        .image-title {
+            font-size: 4rem;
+            font-weight: 100;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .image-description {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+            line-height: 1.7;
+            letter-spacing: 0.5px;
+        }
+
+        /* Technology Section Enhanced */
+        .tech-section {
+            padding: 150px 50px;
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            position: relative;
+        }
+
+        .tech-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .tech-title {
+            font-size: 4rem;
+            font-weight: 100;
+            text-align: center;
+            margin-bottom: 100px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .tech-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 80px;
+        }
+
+        .tech-item {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+        }
+
+        .tech-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tech-item:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-10px);
+        }
+
+        .tech-item h3 {
+            font-size: 1.8rem;
+            font-weight: 200;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tech-item p {
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.85;
+            line-height: 1.8;
+            letter-spacing: 0.3px;
+        }
+
+        /* Video Section Enhanced */
+        .video-section {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .video-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 40px;
+        }
+
+        .video-title {
+            font-size: 4.5rem;
+            font-weight: 100;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .video-description {
+            font-size: 1.4rem;
+            font-weight: 300;
+            opacity: 0.9;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
+        }
+
+        /* Configurator Section */
+        .configurator-section {
+            padding: 150px 50px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        .configurator-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .configurator-title {
+            font-size: 4rem;
+            font-weight: 100;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .configurator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 60px;
+            margin-top: 80px;
+        }
+
+        .config-option {
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .config-option:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .config-option h3 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .config-option p {
+            font-size: 1rem;
+            font-weight: 300;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        .config-cta {
+            display: inline-block;
+            margin-top: 50px;
+            padding: 20px 60px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+        }
+
+        .config-cta:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Footer Enhanced */
+        .footer {
+            padding: 100px 50px 50px;
+            background: #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-section h4 {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 300;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.85rem;
+            opacity: 0.5;
+            font-weight: 300;
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.5));
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100vh;
+            /* background: rgba(0, 0, 0, 0.95); */
+            backdrop-filter: blur(35px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: right 0.4s ease;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: 20px 0;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu.active a {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+            .section-nav {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .stats-container,
+            .specs-grid,
+            .tech-grid,
+            .configurator-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .stats-section,
+            .detailed-specs,
+            .tech-section,
+            .configurator-section {
+                padding: 80px 20px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .stat-number {
+                font-size: 3rem;
+            }
+
+            .image-title {
+                font-size: 2.5rem;
+            }
+
+            .tech-title,
+            .configurator-title {
+                font-size: 2.5rem;
+            }
+
+            .video-title {
+                font-size: 2.5rem;
+            }
+
+            .specs-grid,
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .spec-category {
+                min-width: auto;
+            }
+        }
+
+        /* Add these styles to handle video backgrounds */
+        .video-background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .stats-section,
+        .detailed-specs,
+        .tech-section,
+        .configurator-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-container,
+        .specs-grid,
+        .tech-container,
+        .configurator-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Update existing video styles */
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">SWIFT</div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#nevera">Nevera</a></li>
+                <li><a href="#performance">Performance</a></li>
+                <li><a href="#technology">Technology</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-menu-toggle" id="mobileToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home">Home</a>
+        <a href="#nevera">Nevera</a>
+        <a href="#performance">Performance</a>
+        <a href="#technology">Technology</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+    </div>
+
+    <!-- Section Navigation Indicator -->
+    <div class="section-nav" id="sectionNav">
+        <div class="nav-dots">
+            <div class="nav-dot active" data-section="home">
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-dot" data-section="performance">
+                <span class="nav-label">Performance</span>
+            </div>
+            <div class="nav-dot" data-section="specs">
+                <span class="nav-label">Specifications</span>
+            </div>
+            <div class="nav-dot" data-section="design">
+                <span class="nav-label">Design</span>
+            </div>
+            <div class="nav-dot" data-section="technology">
+                <span class="nav-label">Technology</span>
+            </div>
+            <div class="nav-dot" data-section="experience">
+                <span class="nav-label">Experience</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dual Video Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-video-container">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="RimacNevera8sSTORM-EDIT-1_16-9.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay">
+                <div class="hero-content">
+                    <h1 class="hero-title">Interior</h1>
+                    <p class="hero-subtitle">Luxury Redefined</p>
+                    <a href="#performance" class="hero-cta">Experience</a>
+                    <source src="NeveraR.mp4" type="video/mp4">
+                </div>
+            </div>
+            <div class="section-label">Interior</div>
+        </div>
+        <div class="hero-video-container">
+            <video class="hero-video" autoplay muted loop playsinline>
+                <source src="NeveraR.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay">
+                <div class="hero-content">
+                    <h1 class="hero-title">Exterior</h1>
+                    <p class="hero-subtitle">Luxury Redefined</p>
+                    <a href="#performance" class="hero-cta">Experience</a>
+                    <source src="NeveraR.mp4" type="video/mp4">
+                </div>
+            </div>
+            <div class="section-label">Exterior</div>
+        </div>
+
+        <div class="hero-divider"></div>
+    </section>
+
+    <!-- Performance Stats Section -->
+    <!-- Replace the existing video element with this structure -->
+    <section class="stats-section" id="performance">
+        <div class="video-background-container">
+            <video class="video-background" autoplay muted loop playsinline>
+                <source src="RimacNevera10sHIGHLIGHTS-EDIT-3_16-9.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">1,914</div>
+                <div class="stat-unit">HP</div>
+                <div class="stat-description">Peak Power Output</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1.81</div>
+                <div class="stat-unit">sec</div>
+                <div class="stat-description">0-60 mph Acceleration</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">258</div>
+                <div class="stat-unit">mph</div>
+                <div class="stat-description">Maximum Speed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1.81</div>
+                <div class="stat-unit">sec</div>
+                <div class="stat-description">0-60 mph Acceleration</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">340</div>
+                <div class="stat-unit">mi</div>
+                <div class="stat-description">EPA Range</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Specifications -->
+    <section class="detailed-specs" id="specs">
+        <div class="video-background-container">
+            <video class="video-background" autoplay muted loop playsinline>
+                <source src="NeveraR.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="specs-grid">
+            <!-- Keep existing spec categories -->
+            <div class="spec-category">
+                <h3>Powertrain</h3>
+                <ul class="spec-list">
+                    <li><span class="spec-name">Motors</span><span class="spec-value">4 x Permanent Magnet</span></li>
+                    <li><span class="spec-name">Total Power</span><span class="spec-value">1,914 HP</span></li>
+                    <li><span class="spec-name">Total Torque</span><span class="spec-value">1,741 lb-ft</span></li>
+                    <li><span class="spec-name">Drive Type</span><span class="spec-value">All-Wheel Drive</span></li>
+                </ul>
+            </div>
+            <div class="spec-category">
+                <h3>Battery & Charging</h3>
+                <ul class="spec-list">
+                    <li><span class="spec-name">Battery Capacity</span><span class="spec-value">120 kWh</span></li>
+                    <li><span class="spec-name">DC Fast Charging</span><span class="spec-value">500 kW</span></li>
+                    <li><span class="spec-name">10-80% Charge Time</span><span class="spec-value">22 minutes</span></li>
+                    <li><span class="spec-name">Range (EPA)</span><span class="spec-value">340 miles</span></li>
+                </ul>
+            </div>
+            <div class="spec-category">
+                <h3>Performance</h3>
+                <ul class="spec-list">
+                    <li><span class="spec-name">0-60 mph</span><span class="spec-value">1.81 seconds</span></li>
+                    <li><span class="spec-name">0-100 mph</span><span class="spec-value">4.3 seconds</span></li>
+                    <li><span class="spec-name">Quarter Mile</span><span class="spec-value">8.58 seconds</span></li>
+                    <li><span class="spec-name">Top Speed</span><span class="spec-value">258 mph</span></li>
+                </ul>
+            </div>
+            <div class="spec-category">
+                <h3>Chassis & Dimensions</h3>
+                <ul class="spec-list">
+                    <li><span class="spec-name">Length</span><span class="spec-value">4,459 mm</span></li>
+                    <li><span class="spec-name">Width</span><span class="spec-value">1,994 mm</span></li>
+                    <li><span class="spec-name">Height</span><span class="spec-value">1,212 mm</span></li>
+                    <li><span class="spec-name">Weight</span><span class="spec-value">2,150 kg</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Design Image Section -->
+    <section class="image-section" id="design">
+        <div class="image-overlay">
+            <video class="video-background" autoplay muted loop playsinline>
+                <source src="nevera_engineering_bgloop_1.mp4" type="video/mp4">
+            </video>
+            <div class="image-content">
+                <h2 class="image-title">Design</h2>
+                <p class="image-description">Every curve, every line, every surface of the Nevera has been sculpted to
+                    perfection. The result is a hypercar that cuts through air with unprecedented efficiency while
+                    maintaining the breathtaking beauty that defines Rimac's design philosophy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section Enhanced -->
+    <section class="tech-section" id="technology">
+        <div class="video-background-container">
+            <video class="video-background" autoplay muted loop playsinline>
+                <source src="RimacNevera10sHIGHLIGHTS-EDIT-3_16-9.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="tech-container">
+
+            <h2 class="tech-title">Technology</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h3>All-Wheel Torque Vectoring</h3>
+                    <p>Four independent motors provide precise torque control to each wheel, enabling unprecedented
+                        handling dynamics and traction in all conditions. The system calculates optimal power
+                        distribution 1,000 times per second.</p>
+                </div>
+                <div class="tech-item">
+                    <h3>Rimac AI Driver Coach</h3>
+                    <p>Advanced artificial intelligence analyzes your driving patterns and provides real-time coaching
+                        to help you extract maximum performance from the Nevera while maintaining safety at all times.
+                    </p>
+                </div>
+                <div class="tech-item">
+                    <h3>Carbon Fiber Monocoque</h3>
+                    <p>Lightweight yet incredibly strong carbon fiber construction provides exceptional rigidity while
+                        keeping weight to a minimum. Every component is engineered for optimal strength-to-weight ratio.
+                    </p>
+                </div>
+                <div class="tech-item">
+                    <h3>Rimac Connected</h3>
+                    <p>Stay connected with over-the-air updates, remote diagnostics, and seamless integration with your
+                        digital life. The Nevera evolves and improves continuously through software updates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Video Section -->
+    <section class="video-section" id="experience">
+        <video class="video-background" autoplay muted loop playsinline>
+            <source src="NeveraR.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        <div class="video-content">
+            <h2 class="video-title">Experience</h2>
+            <p class="video-description">Step into the future of automotive excellence. The Nevera isn't just a car—it's
+                a technological masterpiece that redefines what's possible when engineering meets artistry.</p>
+        </div>
+    </section>
+
+    <!-- Configurator Section -->
+    <section class="configurator-section" id="nevera">
+        <div class="video-background-container">
+            <video class="video-background" autoplay muted loop playsinline>
+                <source src="NeveraR.mp4" type="video/mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="configurator-container">
+
+            <h2 class="configurator-title">Configure Your Nevera</h2>
+            <div class="configurator-grid">
+                <video class="video-background" autoplay muted loop playsinline>
+                    <source src="NeveraR.mp4" type="video/mp4">
+                </video>
+                <div class="config-option">
+                    <h3>Exterior Colors</h3>
+                    <p>Choose from an exclusive palette of carefully crafted colors, each designed to highlight the
+                        Nevera's distinctive silhouette and aerodynamic perfection.</p>
+                </div>
+                <div class="config-option">
+                    <h3>Interior Materials</h3>
+                    <p>Select from premium leather, Alcantara, and carbon fiber finishes. Every surface is meticulously
+                        crafted to provide luxury and functionality in perfect harmony.</p>
+                </div>
+                <div class="config-option">
+                    <h3>Wheel Options</h3>
+                    <p>Multiple wheel designs available, each engineered for optimal performance and stunning visual
+                        impact. Choose the perfect complement to your Nevera's character.</p>
+                </div>
+                <div class="config-option">
+                    <h3>Interior Materials</h3>
+                    <p>Select from premium leather, Alcantara, and carbon fiber finishes. Every surface is meticulously
+                        crafted to provide luxury and functionality in perfect harmony.</p>
+                </div>
+                <div class="config-option">
+                    <h3>Performance Packages</h3>
+                    <p>Enhance your Nevera with track-focused upgrades, including advanced aerodynamics packages and
+                        performance-tuned suspension systems.</p>
+                </div>
+            </div>
+            <a href="#contact" class="config-cta">Build & Price</a>
+        </div>
+    </section>
+
+    <!-- Footer Enhanced -->
+    <footer class="footer" id="contact">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Nevera</h4>
+                    <ul class="footer-links">
+                        <li><a href="#performance">Performance</a></li>
+                        <li><a href="#specs">Specifications</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#design">Design</a></li>
+                        <li><a href="#configurator">Configure</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About Rimac</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Investors</a></li>
+                        <li><a href="#">Technology</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Service</a></li>
+                        <li><a href="#">Warranty</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Updates</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#">Social Media</a></li>
+                        <li><a href="#">Events</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">Partners</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Service</a></li>
+                        <li><a href="#">Warranty</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Updates</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rimac Automobili. All rights reserved. | Privacy Policy | Terms of Service</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.querySelector('.scroll-progress').style.width = scrolled + '%';
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Section navigation visibility
+        window.addEventListener('scroll', () => {
+            const sectionNav = document.getElementById('sectionNav');
+            if (window.scrollY > window.innerHeight / 2) {
+                sectionNav.classList.add('visible');
+            } else {
+                sectionNav.classList.remove('visible');
+            }
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animations
+        document.querySelectorAll('.stat-item, .spec-category, .tech-item, .tech-title').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Section navigation dots
+        const sections = ['home', 'performance', 'specs', 'design', 'technology', 'experience'];
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                        current = section;
+                    }
+                }
+            });
+
+            navDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.dataset.section === current) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scroll for navigation dots
+        navDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const section = document.getElementById(dot.dataset.section);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll for all navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect for hero videos
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY;
+            const heroVideos = document.querySelectorAll('.hero-video');
+            heroVideos.forEach(video => {
+                const speed = 0.5;
+                video.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Enhanced hover effects for image sections
+        document.querySelectorAll('.image-section').forEach(section => {
+            section.addEventListener('mousemove', (e) => {
+                const rect = section.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / centerY * 5;
+                const rotateY = (centerX - x) / centerX * 5;
+
+                const img = section.querySelector('img');
+                img.style.transform = `scale(1.1) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            section.addEventListener('mouseleave', () => {
+                const img = section.querySelector('img');
+                img.style.transform = 'scale(1.1)';
+            });
+        });
+
+        // Loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+
+        // Performance optimization: pause videos when not in viewport
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const video = entry.target;
+                if (entry.isIntersecting) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        });
+
+        document.querySelectorAll('video').forEach(video => {
+            videoObserver.observe(video);
+        });
+    </script>
+</body>
+
+</html>
